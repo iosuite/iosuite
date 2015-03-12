@@ -1,0 +1,58 @@
+This is an example file for deploying field/record changes from environment to environment
+
+File naming:
+The file name structure is as follows
+
+1st character is "d", this is for files that demonstrate [d]evelopment only
+2nd character is either "s" or "x". "s" lists the changes as moved to [s]taging, "x" means they have not been moved
+3rd characters is either "p" or "x". "p" lists the changes as moved to [p]roduction, "x" means they have not been moved
+
+Example:
+
+
+----------------------------------------------------------------------
+    {Record Type} | {New|Update|Delete} | {Other Options}
+    eg. Script Deployment | Update | Suitelet
+----------------------------------------------------------------------
+ID: customdeploy_example_deployment
+
+{Settings Tier, if applicable} -> {Setting} -> {New Value}
+Status -> Released
+Log Level -> Debug
+Audience -> Roles -> Administrator
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+    Script Record | New | Restlet
+----------------------------------------------------------------------
+Name -> Script Record Name
+ID -> _script_record_id
+Description -> Script Record Description
+Owner -> Script Owner
+Scripts -> Script File -> Script Fileaname.js
+Scripts -> Post Function -> ScriptPostFunction
+----------------------------------------------------------------------
+    Deployment
+----------------------------------------------------------------------
+Title -> Script Record Name Deploy
+ID -> _script_record_deploy_id
+Deployed -> Checked
+Status -> Released
+Log Level -> Debug
+Audience -> Roles -> Select All -> Checked
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+    Record Name | New | Custom Record Field
+----------------------------------------------------------------------
+Label -> Record Field Label
+ID -> _record_field_id
+Owner -> Record Field Owner
+Description -> Record Field Description
+Type -> Checkbox
+Store Value -> Checked
+Display -> Insert Before -> Outside columns at bottom
+Display Type -> Normal
+----------------------------------------------------------------------
+
+

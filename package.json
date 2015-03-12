@@ -1,0 +1,9 @@
+{
+	"name": "SaaS Script Cloud",
+	"version": "0.1.0",
+	"dependencies": {
+			"jshint":        "2.5.x",
+		},
+	"license": "X11",
+	"Author": "TJ Tyrrell, Software Architect / Team Lead, SRS Acquiom"
+}
