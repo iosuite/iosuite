@@ -24,13 +24,17 @@ module.exports = function() {
 
 	private._readFile = function( file ) {
 
-		var cacheHash = app.crypto.createHash('md5');
+		var cacheHash = app.crypto.createHash('md5'),
+			filePieces = 
 
 		console.log( 'get file' );
 		if( file.indexOf('.') >= 0 ) {
-			private._requestFile = './' + app.application_directory + '/' + file;
+
+			private._requestFile = './' + app.application_directory + '/' + file.substr(0, file.lastIndexOf('.'));
+			private._requestFileExt = file.split('.').pop();
 		} else {
 			private._requestFile = './' + app.application_directory + '/' + file + '.js';
+			private._requestFileExt = '.js';
 		}
 		console.log( private._requestFile );
 
