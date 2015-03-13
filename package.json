@@ -1,5 +1,5 @@
 {
-	"name": "SaaS Script Cloud",
+	"name": "iosuite",
 	"version": "0.1.0",
 	"dependencies": {
 			"jshint":        "2.5.x"
