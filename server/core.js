@@ -1,18 +1,17 @@
-module.exports = function() {
+var core = (function() {
 
-	var public = {},
+	var public = module.parent.iosuite,
 		private = {};
 
 	private._return = 'success';
 
 	private._response;
 
-	private._requestFile;
-	private._cacheFile;
+	private._requestFile = '';
+	private._cacheFile = '';
+	private._cacheFileFull = '';
 
 	public.init = function( file, parameters, response ) {
-
-		console.log( 'router' );
 
 		private._response = response;
 
@@ -24,48 +23,58 @@ module.exports = function() {
 
 	private._readFile = function( file ) {
 
-		var cacheHash = app.crypto.createHash('md5'),
-			filePieces = 
+		var cacheHash = public.module.crypto.createHash('md5'),
+			filePieces = '';
 
-		console.log( 'get file' );
 		if( file.indexOf('.') >= 0 ) {
 
-			private._requestFile = './' + app.application_directory + '/' + file.substr(0, file.lastIndexOf('.'));
+			private._requestFile = './' + public.setting('general','application_directory') + '/' + file.substr(0, file.lastIndexOf('.'));
 			private._requestFileExt = file.split('.').pop();
 		} else {
-			private._requestFile = './' + app.application_directory + '/' + file + '.js';
+			private._requestFile = './' + public.setting('general','application_directory') + '/' + file;
 			private._requestFileExt = '.js';
 		}
-		console.log( private._requestFile );
 
 		/*
 		 * Generate MD5 hash cache name
 		 */
 		cacheHash.update( private._requestFile );
 		private._cacheFile = cacheHash.digest('hex');
+		private._cacheFileFull = './' + public.setting('general','application_directory') + '/cache/' + private._cacheFile + private._requestFileExt;
 
-		switch( app.environment ) {
+		switch( public.setting('general','environment') ) {
 			case 'development':
 				/*
 				 * If the app is in development, create a cache file and send
 				 */
-				app.module.fs.readFile( file, 'utf8', private._createCacheFile );
+				public.module.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
 				break;
-			default:
+			case 'production':
+			case 'staging':
 				/*
 				 * If the app is in any other environment, read the cache if it exists otherwise create the file
 				 * Note: The cache files shouldn't be saved to the repo, they will be created at first use
 				 */
+				public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 				break;
 		}
 
+	}
+
+	private._outputCacheFile = function( error, data ) {
+
+		if( error === null ) {
+			private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+		} else {
+			public.module.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
+		}
 
 	}
 
 	private._createCacheFile = function( err, data ) {
 
 		if( err == null ) {
-			console.log( 'file found' );
+
 			var lines, count,
 				matches = data.match(/{{(.*)}}/g),
 				tag = '',
@@ -82,26 +91,39 @@ module.exports = function() {
 
 			}
 
+			newFile = public.setting('general','server_directory') + public.setting('general','application_directory') + '/cache/' + private._cacheFile + private._requestFileExt;
+
+			public.module.fs.writeFileSync( newFile, data );
 			
 
 			/*
 			 * Run the file through the jshinter and show errors if needed
 			 */
-			app.module.child_process = app.module.child_process.exec();
+			if( public.setting('general','environment') == 'development' ) {
+				console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
+				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
+					if( stdout.toString() == '' ) {
+						console.log( error );
+						private._writeResponse( 200, stderr.toString(), { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+						//public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
+					} else {
+						private._writeResponse( 200, stdout, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+					}
 
-			jsHintProcess = app.module.child_process( 'jshint ' + private._cacheFile, function(error, stdout, stderr) {
-				if( error === null ) {
-					private._writeResponse( 200, stdout, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
-				}
-			});
+				});
+			}
 
 		} else {
-
-			private._writeResponse( 404, err.toString() );
+			var fourohfour = './server/404.js';
+			public.module.fs.readFile( fourohfour, 'utf8', function( error, data ){
+				if( error === null ) {
+					private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+				} else {
+					private._writeResponse( 404, error.toString() );
+				}
+			} );
 
 		}
-
-		console.log( 'file written' );
 
 	};
 
@@ -121,7 +143,7 @@ module.exports = function() {
 	 */
 	private._setupTemplate = function( match, file ) {
 
-		var templateUrl = app.server_url + 'templates/html/' + file + '.html',
+		var templateUrl = public.setting('general','server_url') + 'templates/html/' + file + '.html',
 			templateScript = 'nlapiRequestURL(' + templateUrl + ').getBody();';
 
 		return data.replace( match, templateScript );
@@ -130,7 +152,7 @@ module.exports = function() {
 
 	private._setupStyle = function( match, file ) {
 
-		var styleUrl = app.server_url + 'templates/styles/' + file + '.css',
+		var styleUrl = public.setting('general','server_url') + 'templates/styles/' + file + '.css',
 			styleHref = 'nlapiRequestURL(' + styleUrl + ').getBody();';
 
 		return data.replace( match, styleHref );
@@ -139,7 +161,7 @@ module.exports = function() {
 
 	private._setupClient = function( match, file ) {
 
-		var scriptUrl = app.server_url + 'templates/scripts/' + file + '.js',
+		var scriptUrl = public.setting('general','server_url') + 'templates/scripts/' + file + '.js',
 			scriptSrc = 'nlapiRequestURL(' + scriptUrl + ').getBody();';
 
 		return data.replace( match, scriptSrc );
@@ -148,11 +170,13 @@ module.exports = function() {
 
 	private._setupLibrary = function( match, file ) {
 
-		var scriptUrl = app.server_url + 'libraries/' + file + '.js',
+		var scriptUrl = iosuite.server_url + 'libraries/' + file + '.js',
 			library = 'nlapiRequestURL(' + scriptUrl + ').getBody();';
 
 		return data.replace( match, library );
 	}
 
 	return public;
-};
+})();
+
+module.exports = core;

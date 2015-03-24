@@ -9,31 +9,15 @@ apt-get upgrade -y
 apt-get install build-essential -y
 apt-get install curl libssl-dev -y
 apt-get install git-core -y
+apt-get install npm -y
 
-mkdir /etc/node
+npm install ny -g
+ny stable
+npm install forever -g
 
-cd /etc/node
-
-# Node install
-# wget http://nodejs.org/dist/v0.10.36/node-v0.10.36.tar.gz
-# tar zxvf node-v0.10.36.tar.gz --strip-components=1
-
-# io.js install
-wget https://iojs.org/dist/v1.3.0/iojs-v1.3.0.tar.gz
-tar zxvf iojs-v1.3.0.tar.gz --strip-components=1
-
-./configure
-make
-make install
+sh /var/www/server/certs.sh
 
 exit
-
-cd ~/
-
-sudo npm install learnyounode -g
-
-sudo npm install nodemon -g
-sudo npm install forever -g
 
 SCRIPT
 
@@ -44,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	config.vm.provider "virtualbox" do |v|
 
-		v.name = "nsio"
+		v.name = "iosuite"
 
 		v.memory = 1024
 
@@ -57,7 +41,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "shell", inline: $script
 
 	config.vm.hostname = "NSIO"
-	config.vm.network "forwarded_port", guest: 8080, host: 15280
+	config.vm.network "forwarded_port", guest: 8080, host: 8080
+	config.vm.network "forwarded_port", guest: 8888, host: 8888
 
 #	config.vm.boot_timeout = 60
 #	config.vm.provider "virtualbox" do |vb, override|

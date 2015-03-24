@@ -1,13 +1,17 @@
 #!/bin/bash
-FQDN=$1
 
 # make directories to work from
-mkdir -p ~/certs/{server,client,ca,tmp}
+# for some reason the {folders} option doesn't want to work so these are broken out
+
 mkdir /var/certs
+mkdir /var/certs/server
+mkdir /var/certs/client
+mkdir /var/certs/ca
+mkdir /var/certs/tmp
 
 # Create your very own Root Certificate Authority
 openssl genrsa \
-  -out ~/certs/ca/my-root-ca.key.pem \
+  -out /var/certs/ca/my-root-ca.key.pem \
   2048
 
 # Self-sign your Root Certificate Authority
@@ -16,41 +20,41 @@ openssl req \
   -x509 \
   -new \
   -nodes \
-  -key ~/certs/ca/my-root-ca.key.pem \
+  -key /var/certs/ca/my-root-ca.key.pem \
   -days 1024 \
-  -out ~/certs/ca/my-root-ca.crt.pem \
-  -subj "/C=US/ST=Colorado/L=Denver/O=SRS/CN=srsacquiom.com"
+  -out /var/certs/ca/my-root-ca.crt.pem \
+  -subj "/C=US/ST=Colorado/L=Denver/O=iosuite/CN=iosuite"
 
 # Create a Device Certificate for each domain,
 # such as example.com, *.example.com, awesome.example.com
 # NOTE: You MUST match CN to the domain name or ip address you want to use
 openssl genrsa \
-  -out ~/certs/server/my-server.key.pem \
+  -out /var/certs/server/my-server.key.pem \
   2048
 
 # Create a request from your Device, which your Root CA will sign
 openssl req -new \
-  -key ~/certs/server/my-server.key.pem \
-  -out ~/certs/tmp/my-server.csr.pem \
-  -subj "/C=US/ST=Colorado/L=Denver/O=SRS/CN=${FQDN}"
+  -key /var/certs/server/my-server.key.pem \
+  -out /var/certs/tmp/my-server.csr.pem \
+  -subj "/C=US/ST=Colorado/L=Denver/O=iosuite/CN=iosuite"
 
 # Sign the request from Device with your Root CA
 # -CAserial certs/ca/my-root-ca.srl
 openssl x509 \
-  -req -in ~/certs/tmp/my-server.csr.pem \
-  -CA ~/certs/ca/my-root-ca.crt.pem \
-  -CAkey ~/certs/ca/my-root-ca.key.pem \
+  -req -in /var/certs/tmp/my-server.csr.pem \
+  -CA /var/certs/ca/my-root-ca.crt.pem \
+  -CAkey /var/certs/ca/my-root-ca.key.pem \
   -CAcreateserial \
-  -out ~/certs/server/my-server.crt.pem \
+  -out /var/certs/server/my-server.crt.pem \
   -days 500
 
 # Create a public key, for funzies
 # see https://gist.github.com/coolaj86/f6f36efce2821dfb046d
 openssl rsa \
-  -in ~/certs/server/my-server.key.pem \
-  -pubout -out ~/certs/client/my-server.pub
+  -in /var/certs/server/my-server.key.pem \
+  -pubout -out /var/certs/client/my-server.pub
 
 # Put things in their proper place
-rsync -a ~/certs/ca/my-root-ca.crt.pem /var/certs/
-rsync -a ~/certs/server/my-server.key.pem /var/certs/
-rsync -a ~/certs/server/my-server.crt.pem /var/certs/
+rsync -a /var/certs/ca/my-root-ca.crt.pem /var/certs/
+rsync -a /var/certs/server/my-server.key.pem /var/certs/
+rsync -a /var/certs/server/my-server.crt.pem /var/certs/
