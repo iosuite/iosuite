@@ -34,5 +34,5 @@
 
 	}
 
-	return public;
+	return _public;
 })();
