@@ -24,14 +24,22 @@ var core = (function() {
 	private._readFile = function( file ) {
 
 		var cacheHash = public.module.crypto.createHash('md5'),
-			filePieces = '';
+			filePieces = file.split('/'),
+			requestFolder = './';
+
+		/*
+		 *  If the request has an attached user, go to that users directory
+		 */
+		if( filePieces[0].indexOf('@') >= 0 ) {
+			requestFolder = filePieces.shift();
+			file = public.setting('general','user_directory') + filePieces.join('/');
+		}
 
 		if( file.indexOf('.') >= 0 ) {
-
-			private._requestFile = './' + public.setting('general','application_directory') + '/' + file.substr(0, file.lastIndexOf('.'));
+			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file.substr(0, file.lastIndexOf('.'));
 			private._requestFileExt = file.split('.').pop();
 		} else {
-			private._requestFile = './' + public.setting('general','application_directory') + '/' + file;
+			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file;
 			private._requestFileExt = '.js';
 		}
 
