@@ -31,8 +31,8 @@ var core = (function() {
 		 *  If the request has an attached user, go to that users directory
 		 */
 		if( filePieces[0].indexOf('@') >= 0 ) {
-			requestFolder = filePieces.shift();
-			file = public.setting('general','user_directory') + filePieces.join('/');
+			requestFolder = public.setting('general','user_directory') + filePieces.shift() + '/';
+			file = filePieces.join('/');
 		}
 
 		if( file.indexOf('.') >= 0 ) {
@@ -42,6 +42,8 @@ var core = (function() {
 			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file;
 			private._requestFileExt = '.js';
 		}
+
+		console.log( private._requestFile );
 
 		/*
 		 * Generate MD5 hash cache name
@@ -108,12 +110,12 @@ var core = (function() {
 			 * Run the file through the jshinter and show errors if needed
 			 */
 			if( public.setting('general','environment') == 'development' ) {
-				console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
+				//console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
 				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
 					if( stdout.toString() == '' ) {
 						console.log( error );
-						private._writeResponse( 200, stderr.toString(), { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
-						//public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
+						//private._writeResponse( 200, stderr.toString(), { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+						public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 					} else {
 						private._writeResponse( 200, stdout, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
 					}

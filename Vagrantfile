@@ -15,7 +15,7 @@ npm install ny -g
 ny stable
 npm install forever -g
 
-sh /var/www/server/certs.sh
+sh /var/www/iosuite/server/certs.sh
 
 exit
 
@@ -36,7 +36,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	end
 
-	config.vm.synced_folder './', '/var/www'
+	config.vm.synced_folder './', '/var/www/iosuite'
+	config.vm.synced_folder '~/', '/var/www/users'
 
 	config.vm.provision "shell", inline: $script
 
