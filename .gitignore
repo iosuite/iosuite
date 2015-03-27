@@ -38,3 +38,7 @@ node_modules
 
 # Ignore app specific settings.ini file
 settings.ini
+
+# Ignore application cache files
+application/cache/*
+!application/cache/index.html
