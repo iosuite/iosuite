@@ -1,13 +1,33 @@
 (function(){
 
-	var private = {},
-		public = {};
+	var _private = {},
+		_public = {};
 
-	public.load = function( dataIn ) {
-		console.log('test');
-		nlapiLogExecution();
-		private._error();
-	}
+	_private._library.global = {{library:global}};
 
-	return public;
+	_public.load = function( dataIn ) {
+		
+		var response = {},
+			context = nlapiGetContext(),
+			html = {{template:sample}},
+			tags = {};
+
+		tags.company = context.getCompany();
+		tags.environment = context.getEnvironment();
+		tags.version = context.getVersion();
+		tags.email = context.getEmail();
+		tags.username = context.getName();
+		//tags.jobtitle = context
+		tags.userid = context.getUser();
+
+		_private._library.global.mapTags( html, tags );
+
+		response.headers['Content-Type'] = 'text/html';
+		response.data = html;
+
+		return response;
+
+	};
+
+	return _public;
 })();

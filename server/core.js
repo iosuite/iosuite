@@ -96,7 +96,7 @@ var core = (function() {
 					call = '_setup' + tag[0].charAt(0).toUpperCase() + tag[0].slice(1);
 
 				if( typeof private[ call ] == 'function' ) {
-					data = private[ call ]( matches[ match ], tag[1] );
+					data = private[ call ]( data, matches[ match ], tag[1] );
 				}
 
 			}
@@ -151,37 +151,37 @@ var core = (function() {
 	/*
 	 * Convert template call to NetSuite getBody
 	 */
-	private._setupTemplate = function( match, file ) {
+	private._setupTemplate = function( data, match, file ) {
 
-		var templateUrl = public.setting('general','server_url') + 'templates/html/' + file + '.html',
-			templateScript = 'nlapiRequestURL(' + templateUrl + ').getBody();';
+		var templateUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/html/' + file + '.html',
+			templateScript = 'nlapiRequestURL("' + templateUrl + '").getBody()';
 
 		return data.replace( match, templateScript );
 
 	};
 
-	private._setupStyle = function( match, file ) {
+	private._setupStyle = function( data, match, file ) {
 
-		var styleUrl = public.setting('general','server_url') + 'templates/styles/' + file + '.css',
-			styleHref = 'nlapiRequestURL(' + styleUrl + ').getBody();';
+		var styleUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/styles/' + file + '.css',
+			styleHref = 'nlapiRequestURL("' + styleUrl + '").getBody()';
 
 		return data.replace( match, styleHref );
 
 	};
 
-	private._setupClient = function( match, file ) {
+	private._setupClient = function( data, match, file ) {
 
 		var scriptUrl = public.setting('general','server_url') + 'templates/scripts/' + file + '.js',
-			scriptSrc = 'nlapiRequestURL(' + scriptUrl + ').getBody();';
+			scriptSrc = 'nlapiRequestURL("' + scriptUrl + '").getBody()';
 
 		return data.replace( match, scriptSrc );
 
 	};
 
-	private._setupLibrary = function( match, file ) {
+	private._setupLibrary = function( data, match, file ) {
 
-		var scriptUrl = iosuite.server_url + 'libraries/' + file + '.js',
-			library = 'nlapiRequestURL(' + scriptUrl + ').getBody();';
+		var scriptUrl = './' + public.setting('general','application_directory') + '/libraries/' + file + '.js',
+			library = public.module.fs.readFileSync(scriptUrl);
 
 		return data.replace( match, library );
 	}
