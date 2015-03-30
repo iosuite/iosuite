@@ -1,9 +1,10 @@
 (function(){
 
 	var _private = {},
-		_public = {};
+		_public = {},
+		library = {};
 
-	_private._library.global = {{library:global}};
+	library.global = {{library:global}};
 
 	_public.load = function( dataIn ) {
 		
@@ -20,7 +21,7 @@
 		//tags.jobtitle = context
 		tags.userid = context.getUser();
 
-		_private._library.global.mapTags( html, tags );
+		library.global.mapTags( html, tags );
 
 		response.headers['Content-Type'] = 'text/html';
 		response.data = html;
