@@ -27,7 +27,22 @@ var iosuite = (function(){
 		}
 
 		private._settings = public.module.ini.parse( public.module.fs.readFileSync( private._settingsPath, 'utf-8' ) );
+		
+		/*
+		 *  When restarting the server, clear the cache
+		 */
+		var cacheDirectory = public.setting('general','server_directory') + '/' + public.setting('general','application_directory') + '/cache/',
+			cacheFiles = public.module.fs.readdirSync( cacheDirectory );
 
+		for( var i = 0; i < cacheFiles.length; i++ ) {
+			if( cacheFiles[i] != 'index.html' ) {
+				public.module.fs.unlink( cacheDirectory + cacheFiles[i] );
+			}
+		}
+
+		/*
+		 *  Start the server
+		 */
 		private._server = require('./server/launch');
 		private._core = require('./server/core');
 

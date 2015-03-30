@@ -36,8 +36,8 @@ var core = (function() {
 		}
 
 		if( file.indexOf('.') >= 0 ) {
-			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file.substr(0, file.lastIndexOf('.'));
-			private._requestFileExt = file.split('.').pop();
+			private._requestFile = requestFolder + file.substr(0, file.lastIndexOf('.'));
+			private._requestFileExt = '.' + file.split('.').pop();
 		} else {
 			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file;
 			private._requestFileExt = '.js';
@@ -57,6 +57,7 @@ var core = (function() {
 				/*
 				 * If the app is in development, create a cache file and send
 				 */
+				console.log( private._requestFile + private._requestFileExt );
 				public.module.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
 				break;
 			case 'production':
@@ -153,7 +154,7 @@ var core = (function() {
 	 */
 	private._setupTemplate = function( data, match, file ) {
 
-		var templateUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/html/' + file + '.html',
+		var templateUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/' + file + '.html',
 			templateScript = 'nlapiRequestURL("' + templateUrl + '").getBody()';
 
 		return data.replace( match, templateScript );
@@ -162,7 +163,7 @@ var core = (function() {
 
 	private._setupStyle = function( data, match, file ) {
 
-		var styleUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/styles/' + file + '.css',
+		var styleUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/styles/' + file + '.css',
 			styleHref = 'nlapiRequestURL("' + styleUrl + '").getBody()';
 
 		return data.replace( match, styleHref );
@@ -171,7 +172,7 @@ var core = (function() {
 
 	private._setupClient = function( data, match, file ) {
 
-		var scriptUrl = public.setting('general','server_url') + 'templates/scripts/' + file + '.js',
+		var scriptUrl = public.setting('general','server_url') + '/scripts/' + file + '.js',
 			scriptSrc = 'nlapiRequestURL("' + scriptUrl + '").getBody()';
 
 		return data.replace( match, scriptSrc );
