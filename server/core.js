@@ -102,6 +102,10 @@ var core = (function() {
 
 			}
 
+			data = data.replace(/[^'":]\/\/.*/g, function(match){
+				return '/*' + match.replace('//','') + '*/';
+			});
+
 			newFile = public.setting('general','server_directory') + public.setting('general','application_directory') + '/cache/' + private._cacheFile + private._requestFileExt;
 
 			public.module.fs.writeFileSync( newFile, data );
