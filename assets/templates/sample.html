@@ -1,43 +1,53 @@
-<section class="wrapper">
-	<h1>Hello World!</h1>
-	<div id="netsuite_data">
-		<ul>
-			<li>
-				<label class="company">
-					Company: <span data-popup="nlapiGetContext().getCompany();">{{company}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="environment">
-					Environment: <span data-popup="nlapiGetContext().getEnvironment();">{{environment}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="version">
-					NetSuite Version: <span data-popup="nlapiGetContext().getVersion();">{{version}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="email">
-					User Email: <span data-popup="nlapiGetContext().getEmail();">{{email}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="username">
-					User Name: <span data-popup="nlapiGetContext().getName();">{{username}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="username">
-					User Job Title: <span data-popup="Search user for Job Title">{{jobtitle}}</span>
-				</label>
-			</li>
-			<li>
-				<label class="userid">
-					User ID: <span data-popup="nlapiGetContext().getUser();">{{userid}}</span>
-				</label>
-			</li>
-		</ul>
-	</div>
-	<button id="update_title">New Job Title</button>
-</section>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>NetSuite Suitelet Sample Template</title>
+	</head>
+	<body>
+
+
+		<section class="wrapper">
+			<h1>Hello World!</h1>
+			<div id="netsuite_data">
+				<ul>
+					<li>
+						<label class="company">
+							Company: <span data-popup="nlapiGetContext().getCompany();">{{company}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="environment">
+							Environment: <span data-popup="nlapiGetContext().getEnvironment();">{{environment}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="version">
+							NetSuite Version: <span data-popup="nlapiGetContext().getVersion();">{{version}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="email">
+							User Email: <span data-popup="nlapiGetContext().getEmail();">{{email}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="username">
+							User Name: <span data-popup="nlapiGetContext().getName();">{{username}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="username">
+							User Job Title: <span data-popup="Search user for Job Title">{{jobtitle}}</span>
+						</label>
+					</li>
+					<li>
+						<label class="userid">
+							User ID: <span data-popup="nlapiGetContext().getUser();">{{userid}}</span>
+						</label>
+					</li>
+				</ul>
+			</div>
+			<button id="update_title">New Job Title</button>
+		</section>
+	</body>
+</html>
