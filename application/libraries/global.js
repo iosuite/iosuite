@@ -13,7 +13,7 @@
 
 			if( tags[tag] ) {
 
-				data.replace( replaceAll, tags[tag] );
+				data = data.replace( replaceAll, tags[tag] );
 
 			}
 
