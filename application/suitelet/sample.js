@@ -6,7 +6,7 @@
 
 	public.load = function( dataIn ) {
 		
-		var response = {},
+		var response = '',
 			context = nlapiGetContext(),
 			html = {{template:sample}},
 			tags = {};
@@ -19,10 +19,7 @@
 		//tags.jobtitle = context
 		tags.userid = context.getUser();
 
-		public.libraries.global.mapTags( html, tags );
-
-		response.headers['Content-Type'] = 'text/html';
-		response.data = html;
+		response = public.libraries.global.mapTags( html, tags );
 
 		return response;
 
