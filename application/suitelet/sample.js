@@ -1,12 +1,10 @@
 (function(){
 
-	var _private = {},
-		_public = {},
-		library = {};
+	var private = {};
 
-	library.global = {{library:global}};
+	public.libraries.global = {{library:global}};
 
-	_public.load = function( dataIn ) {
+	public.load = function( dataIn ) {
 		
 		var response = {},
 			context = nlapiGetContext(),
@@ -21,7 +19,7 @@
 		//tags.jobtitle = context
 		tags.userid = context.getUser();
 
-		library.global.mapTags( html, tags );
+		public.libraries.global.mapTags( html, tags );
 
 		response.headers['Content-Type'] = 'text/html';
 		response.data = html;
@@ -30,5 +28,4 @@
 
 	};
 
-	return _public;
 })();

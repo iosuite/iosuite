@@ -1,7 +1,6 @@
 (function(){
 
-	var private = {},
-		public = {};
+	var private = {};
 
 	public.mapTags = function( data, tags ) {
 		var matches = data.match(/{{(.*)}}/g),
@@ -22,5 +21,7 @@
 
 		return data;
 	};
+
+	return public;
 
 })()

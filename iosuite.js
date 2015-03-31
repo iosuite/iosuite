@@ -9,6 +9,8 @@ var iosuite = (function(){
 	public.module = {};
 	private._modules = ['path', 'fs', 'url', 'child_process', 'crypto', 'ini'];
 
+	public.libraries
+
 	private._server = {};
 	private._core = {};
 	private._urlObject = {};
