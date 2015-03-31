@@ -8,8 +8,8 @@
 
 		for( var match in matches ) {
 
-			tag = matches[ match ];
-			replaceAll = new RegExp(tag, "g");
+			tag = matches[ match ].replace('{{','').replace('}}','');
+			replaceAll = new RegExp( '{{' + tag + '}}', "g");
 
 			if( tags[tag] ) {
 
