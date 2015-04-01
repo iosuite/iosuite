@@ -7,9 +7,7 @@ sudo -i
 apt-get update -y
 apt-get upgrade -y
 apt-get install build-essential -y
-apt-get install curl libssl-dev -y
-apt-get install git-core -y
-apt-get install npm -y
+apt-get install curl libssl-dev ngrok-client git-core npm -y
 
 npm install ny -g
 ny stable
@@ -42,8 +40,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "shell", inline: $script
 
 	config.vm.hostname = "NSIO"
-	config.vm.network "forwarded_port", guest: 8080, host: 8080
-	config.vm.network "forwarded_port", guest: 8888, host: 8888
 
 #	config.vm.boot_timeout = 60
 #	config.vm.provider "virtualbox" do |vb, override|

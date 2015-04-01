@@ -1,9 +1,18 @@
+/*
+	
+	Restlet Functions
+
+	Setters
+		private._setStatus('SUCCESS') -- Set the return status of the restlet: accepts 'SUCCESS', 'ERROR', 'WARNING', 'INCOMPLETE'
+		private._addMessage( 1337, 'Message to send back') -- Add a message to the reponse, accepts a message ID and the message
+
+*/
+
 (function(){
 
-	var _public = {},
-		_private = {};
+	var private = {};
 
-	_public.readCall = function( dataIn ) {
+	public.readCall = function( dataIn ) {
 		
 		var returnPayload = {};
 
@@ -34,5 +43,5 @@
 
 	}
 
-	return _public;
+	return public;
 })();
