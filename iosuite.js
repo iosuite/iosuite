@@ -48,7 +48,7 @@ var iosuite = (function(){
 		private._server = require('./server/launch');
 		private._core = require('./server/core');
 
-		private._server.start( 8888, 8080, private._run );
+		private._server.start( 8080, private._run );
 
 	};
 

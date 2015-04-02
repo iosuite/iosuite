@@ -16,15 +16,15 @@ var launch = (function() {
 		cert: public.module.fs.readFileSync( public.module.path.join('/var', 'certs', 'my-server.crt.pem') )
 	};
 
-	public.start = function( httpsPort, httpPort, callback ) {
+	public.start = function( port, callback ) {
 
-		private._httpsServer = private._https.createServer( private._secureServerOptions, callback );
-		private._httpsServer.listen( httpsPort );
-		console.log( 'Listening for https on port: ' + httpsPort );
+		/*private._httpsServer = private._https.createServer( private._secureServerOptions, callback );
+		private._httpsServer.listen( port );
+		console.log( 'Listening for https on port: ' + port );*/
 
 		private._httpServer = private._http.createServer( callback );
-		private._httpServer.listen( httpPort );
-		console.log( 'Listening for http on port: ' + httpPort );
+		private._httpServer.listen( port );
+		console.log( 'Listening for http on port: ' + port );
 
 	}
 

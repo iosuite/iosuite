@@ -15,7 +15,7 @@
 		tags.environment = context.getEnvironment();
 		tags.version = context.getVersion();
 		tags.email = context.getEmail();
-		tags.username = context.getName();
+		tags.username = 'Hi there ' + context.getName() + "!";
 		//tags.jobtitle = context
 		tags.userid = context.getUser();
 

@@ -12,6 +12,8 @@ apt-get install curl libssl-dev ngrok-client git-core npm -y
 npm install ny -g
 ny stable
 npm install forever -g
+npm install nodemon -g
+npm install jshint -g
 
 sh /var/www/iosuite/server/certs.sh
 
@@ -40,6 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "shell", inline: $script
 
 	config.vm.hostname = "NSIO"
+	config.vm.network "forwarded_port", guest: 8080, host: 8080
 
 #	config.vm.boot_timeout = 60
 #	config.vm.provider "virtualbox" do |vb, override|
