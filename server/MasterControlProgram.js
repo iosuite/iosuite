@@ -300,8 +300,7 @@ var mcp = (function(){
 	}
 
 	public.restletCreate = function( dataIn ) {
-		nlapiLogExecution('DEBUG', 'dataIn', JSON.stringify(dataIn) );
-		dataIn = JSON.parse( JSON.stringify( dataIn ) );
+
 		private._restletRouter( dataIn );
 
 		private._callFunction = 'createCall';
@@ -400,15 +399,49 @@ var mcp = (function(){
 	 *
 	 */
 
-	public.userEventBeforeLoad = function( type, form, request ) {
+	private._userEventRouter = function() {
+
+		var arguments = '',
+			callFile = '',
+			callModule = '';
+
+		for( parameter in dataIn ) {
+			nlapiLogExecution('DEBUG', 'restlet data', parameter + ':' + dataIn[parameter]);
+			switch( parameter ) {
+	
+				case 'restlet':
+					callFile = dataIn[ parameter ];
+					break;
+				case 'module':
+					callModule = dataIn[ parameter ];
+					break;
+				default:
+					var argument = parameter + "=" + encodeURIComponent( dataIn[ parameter ] );
+					arguments += ( arguments == '' ) ? '?' + argument : '&' + argument;
+					break;
+			}
+		}
 
 		private._callType = 'userEvent';
-		private._callFunction = 'beforeLoad';
-		private._arguments.type = type;
-		private._arguments.form = form;
-		private._arguments.request = request;
+		private._callFile = '/' + callFile;
+		private._callModule = '/' + callModule;
+		private._arguments = arguments;
+		private._dataIn = dataIn;
 
-		private.masterControlProceedure();
+	}
+
+	public.userEventBeforeLoad = function( type, form, request ) {
+
+		var dataIn = {},
+			dataIn.type = type,
+			dataIn.form = form,
+			dataIn.request = request;
+
+		private._userEventRouter( dataIn );
+
+		private._callFunction = 'beforeLoad';
+
+		return private.masterControlProceedure();
 
 	}
 
@@ -437,17 +470,6 @@ var mcp = (function(){
 	 * Client Functions
 	 *
 	 */
-	
-	public.clientMaster = function( callFile, callModule ) {
-		
-		private._callType = 'client';
-		private._callFile = '/' + callFile;
-		private._callModule = '/' + callModule;
-		private._callFunction = 'init';
-		
-		private.masterControlProceedure();
-		
-	}
 
 	public.clientPageInit = function( type ) {
 
@@ -554,15 +576,6 @@ var mcp = (function(){
 	}
 
 	/*
-	 * Generate hash for external call
-	 *
-	 *
-	 */
-	private._hashGen = function() {
-
-	}
-
-	/*
 	 * Execution Time Functions
 	 */
 
@@ -593,7 +606,3 @@ var mcp = (function(){
 	return public;
 
 }());
-
-if( typeof callFile != 'undefined' && typeof callModule != 'undefined' ) {
-	mcp.clientMaster( callFile, callModule );
-}

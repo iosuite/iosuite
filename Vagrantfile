@@ -15,8 +15,6 @@ npm install forever -g
 npm install nodemon -g
 npm install jshint -g
 
-sh /var/www/iosuite/server/certs.sh
-
 exit
 
 SCRIPT
@@ -37,7 +35,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	end
 
 	config.vm.synced_folder './', '/var/www/iosuite'
-	config.vm.synced_folder '~/', '/var/www/users'
 
 	config.vm.provision "shell", inline: $script
 

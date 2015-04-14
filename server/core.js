@@ -27,19 +27,11 @@ var core = (function() {
 			filePieces = file.split('/'),
 			requestFolder = './';
 
-		/*
-		 *  If the request has an attached user, go to that users directory
-		 */
-		if( filePieces[0].indexOf('@') >= 0 ) {
-			requestFolder = public.setting('general','user_directory') + filePieces.shift() + '/';
-			file = filePieces.join('/');
-		}
-
 		if( file.indexOf('.') >= 0 ) {
 			private._requestFile = requestFolder + file.substr(0, file.lastIndexOf('.'));
 			private._requestFileExt = '.' + file.split('.').pop();
 		} else {
-			private._requestFile = requestFolder + public.setting('general','application_directory') + '/' + file;
+			private._requestFile = requestFolder + public.setting('application','directory') + '/' + file;
 			private._requestFileExt = '.js';
 		}
 
@@ -50,9 +42,9 @@ var core = (function() {
 		 */
 		cacheHash.update( private._requestFile );
 		private._cacheFile = cacheHash.digest('hex');
-		private._cacheFileFull = './' + public.setting('general','application_directory') + '/cache/' + private._cacheFile + private._requestFileExt;
+		private._cacheFileFull = './' + public.setting('application','directory') + '/cache/' + private._cacheFile + private._requestFileExt;
 
-		switch( public.setting('general','environment') ) {
+		switch( public.setting('application','environment') ) {
 			case 'development':
 				/*
 				 * If the app is in development, create a cache file and send
@@ -106,7 +98,7 @@ var core = (function() {
 				return '/*' + match.replace('//','') + '*/';
 			});
 
-			newFile = public.setting('general','server_directory') + public.setting('general','application_directory') + '/cache/' + private._cacheFile + private._requestFileExt;
+			newFile = public.setting('application','root') + public.setting('application','directory') + '/cache/' + private._cacheFile + private._requestFileExt;
 
 			public.module.fs.writeFileSync( newFile, data );
 			
@@ -116,7 +108,7 @@ var core = (function() {
 			 */
 			if( public.setting('general','environment') == 'development' ) {
 				//console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
-				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
+				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('application','root') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
 					if( stdout.toString() == '' ) {
 						console.log( error );
 						//private._writeResponse( 200, stderr.toString(), { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
@@ -158,7 +150,7 @@ var core = (function() {
 	 */
 	private._setupTemplate = function( data, match, file ) {
 
-		var templateUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/templates/' + file + '.html',
+		var templateUrl = public.setting('server','url') + public.setting('application','assets') + '/templates/' + file + '.html',
 			templateScript = 'nlapiRequestURL("' + templateUrl + '").getBody()';
 
 		return data.replace( match, templateScript );
@@ -167,7 +159,7 @@ var core = (function() {
 
 	private._setupStyle = function( data, match, file ) {
 
-		var styleUrl = public.setting('general','server_url') + public.setting('general','assets_directory') + '/styles/' + file + '.css',
+		var styleUrl = public.setting('server','url') + public.setting('application','assets') + '/styles/' + file + '.css',
 			styleHref = 'nlapiRequestURL("' + styleUrl + '").getBody()';
 
 		return data.replace( match, styleHref );
@@ -176,7 +168,7 @@ var core = (function() {
 
 	private._setupClient = function( data, match, file ) {
 
-		var scriptUrl = public.setting('general','server_url') + '/scripts/' + file + '.js',
+		var scriptUrl = public.setting('server','url') + '/scripts/' + file + '.js',
 			scriptSrc = 'nlapiRequestURL("' + scriptUrl + '").getBody()';
 
 		return data.replace( match, scriptSrc );
@@ -185,7 +177,7 @@ var core = (function() {
 
 	private._setupLibrary = function( data, match, file ) {
 
-		var scriptUrl = './' + public.setting('general','application_directory') + '/libraries/' + file + '.js',
+		var scriptUrl = './' + public.setting('application','directory') + '/libraries/' + file + '.js',
 			library = public.module.fs.readFileSync(scriptUrl);
 
 		return data.replace( match, library );

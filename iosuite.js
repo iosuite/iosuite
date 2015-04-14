@@ -33,7 +33,7 @@ var iosuite = (function(){
 		/*
 		 *  When restarting the server, clear the cache
 		 */
-		var cacheDirectory = public.setting('general','server_directory') + '/' + public.setting('general','application_directory') + '/cache/',
+		var cacheDirectory = public.setting('application','root') + '/' + public.setting('application','directory') + '/cache/',
 			cacheFiles = public.module.fs.readdirSync( cacheDirectory );
 
 		for( var i = 0; i < cacheFiles.length; i++ ) {
@@ -48,13 +48,13 @@ var iosuite = (function(){
 		private._server = require('./server/launch');
 		private._core = require('./server/core');
 
-		private._server.start( 8080, private._run );
+		private._server.start( public.setting('server','port'), private._run );
 
 	};
 
 	private._run = function( request, response ) {
 
-		if( public.setting('general', 'environment') != 'production' ) {
+		if( public.setting('application', 'environment') != 'production' ) {
 			console.log( 'request received' );
 			console.log( '-----------REQUEST START-----------' );
 			console.log( request.headers['user-agent'] );
