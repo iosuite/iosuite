@@ -33,7 +33,7 @@ var iosuite = (function(){
 		/*
 		 *  When restarting the server, clear the cache
 		 */
-		var cacheDirectory = public.setting('application','root') + '/' + public.setting('application','directory') + '/cache/',
+		var cacheDirectory = public.setting('application','root') + public.setting('application','directory') + '/cache/',
 			cacheFiles = public.module.fs.readdirSync( cacheDirectory );
 
 		for( var i = 0; i < cacheFiles.length; i++ ) {
@@ -75,7 +75,7 @@ var iosuite = (function(){
 	};
 
 	public.setting = function( section, key ) {
-		return private._settings[section][key];
+		return private._settings[section][key].trim();
 	};
 
 	public.version = function() {

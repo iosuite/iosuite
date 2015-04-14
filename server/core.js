@@ -106,7 +106,7 @@ var core = (function() {
 			/*
 			 * Run the file through the jshinter and show errors if needed
 			 */
-			if( public.setting('general','environment') == 'development' ) {
+			if( public.setting('application','environment') == 'development' ) {
 				//console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
 				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('application','root') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
 					if( stdout.toString() == '' ) {
