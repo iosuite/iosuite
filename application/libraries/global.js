@@ -6,17 +6,19 @@
 		var matches = data.match(/{{(.*)}}/g),
 			tag, replaceAll;
 
-		for( var match in matches ) {
+		if( matches ) {
+			for( var match in matches ) {
 
-			tag = matches[ match ].replace('{{','').replace('}}','');
-			replaceAll = new RegExp( '{{' + tag + '}}', "g");
+				tag = matches[ match ].replace('{{','').replace('}}','');
+				replaceAll = new RegExp( '{{' + tag + '}}', "g");
 
-			if( tags[tag] ) {
+				if( tags[tag] ) {
 
-				data = data.replace( replaceAll, tags[tag] );
+					data = data.replace( replaceAll, tags[tag] );
+
+				}
 
 			}
-
 		}
 
 		return data;
@@ -48,12 +50,14 @@
 			
 		}
 
-		for( var item in responseError ) {
-			nlapiLogExecution('ERROR', type, responseError[item]);
+		if( item ) {
+			for( var item in responseError ) {
+				nlapiLogExecution('ERROR', type, responseError[item]);
+			}
 		}
 
 		return responseError;
-	}
+	};
 
 	return public;
 
