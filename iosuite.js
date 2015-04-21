@@ -7,7 +7,7 @@ var iosuite = (function(){
 	private._settings = {};
 
 	public.module = {};
-	private._modules = ['path', 'fs', 'url', 'child_process', 'crypto', 'ini'];
+	private._modules = ['path', 'fs', 'url', 'child_process', 'crypto', 'ini', 'mime'];
 
 	public.libraries
 

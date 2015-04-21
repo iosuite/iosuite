@@ -6,7 +6,8 @@
 		"url": "git://github.com/iosuite/iosuite.git"
 	},
 	"dependencies": {
-			"ini":           "1.3.3"
+			"ini":           "1.3.3",
+			"mime":          "1.3.4"
 		},
 	"license": "X11",
 	"Author": "TJ Tyrrell, Software Architect / Team Lead, SRS Acquiom"

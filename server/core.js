@@ -15,9 +15,37 @@ var core = (function() {
 
 		private._response = response;
 
-		private._return = private._readFile( file );
+		if( file.indexOf('assets/') >= 0 ) {
+			/*
+			 * Request is for an image / script / style
+			 */
+			private._return = private._readAsset( file );
+		} else {
+			private._return = private._readFile( file );
+		}
 
 		return private._return;
+
+	}
+
+	private._readAsset = function( file ) {
+		private._requestFile = './' + file.substr(0, file.lastIndexOf('.'));
+		private._requestFileExt = '.' + file.split('.').pop();
+
+		try {
+			var asset = public.module.fs.readFileSync( private._requestFile + private._requestFileExt );
+
+			var contentType = public.module.mime.lookup( private._requestFile + private._requestFileExt );
+			private._response.writeHead( 200, { 'Content-Type': contentType } );
+			private._response.end( asset, 'binary' );
+
+		} catch(e) {
+			if( e.code !== 'ENOENT' ) {
+				throw e;
+			} else {
+				private._writeResponse( 404, 'File does not exist', { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
+			}
+		}
 
 	}
 
