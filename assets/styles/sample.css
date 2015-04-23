@@ -17,6 +17,10 @@ section.wrapper {
 	background: #FFFFFF;
 }
 
+section.wrapper img {
+	max-width: 90%;
+}
+
 #update_title {
 	display: block;
 	height: 25px;
