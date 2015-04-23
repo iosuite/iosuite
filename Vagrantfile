@@ -7,7 +7,13 @@ sudo -i
 apt-get update -y
 apt-get upgrade -y
 apt-get install build-essential -y
-apt-get install curl libssl-dev ngrok-client git-core npm -y
+apt-get install curl libssl-dev unzip git-core npm -y
+
+cd ~/
+wget https://dl.ngrok.com/ngrok_2.0.17_linux_amd64.zip
+cd /usr/lib
+unzip ~/ngrok_2.0.17_linux_amd64.zip
+alias ngrok=/usr/lib/ngrok
 
 npm install ny -g
 ny stable

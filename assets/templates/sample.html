@@ -2,11 +2,15 @@
 <html>
 	<head>
 		<title>NetSuite Suitelet Sample Template</title>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+		{{style:sample}}
+		{{script:sample}}
 	</head>
 	<body>
 
 
 		<section class="wrapper">
+			<div class="logo"></div>
 			<h1>Hello World!</h1>
 			<div id="netsuite_data">
 				<ul>
@@ -36,7 +40,7 @@
 						</label>
 					</li>
 					<li>
-						<label class="username">
+						<label class="title">
 							User Job Title: <span data-popup="Search user for Job Title">{{jobtitle}}</span>
 						</label>
 					</li>
@@ -50,4 +54,5 @@
 			<button id="update_title">New Job Title</button>
 		</section>
 	</body>
+
 </html>

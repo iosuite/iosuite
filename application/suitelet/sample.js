@@ -9,14 +9,28 @@
 		var response = '',
 			context = nlapiGetContext(),
 			html = {{template:sample}},
-			tags = {};
+			tags = {},
+			employeeFilters = [],
+			employeeColumns = [],
+			employeeRecord;
+
+		/*
+		 *  Set Filters and Columns
+		 */
+		employeeFilters.push( new nlobjSearchFilter('internalid', null, 'is', context.getUser() ) );
+		employeeColumns.push( new nlobjSearchColumn('title') );
+		try {
+			employeeRecord = nlapiSearchRecord('employee', null, employeeFilters, employeeColumns);
+		} catch(error) {
+			public.libraries.global.handleError( error, 'ERROR' );
+		}
 
 		tags.company = context.getCompany();
 		tags.environment = context.getEnvironment();
 		tags.version = context.getVersion();
 		tags.email = context.getEmail();
 		tags.username = context.getName();
-		//tags.jobtitle = context
+		tags.jobtitle = employeeRecord[0].getValue('title') || 'Not Set';
 		tags.userid = context.getUser();
 
 		response = public.libraries.global.mapTags( html, tags );

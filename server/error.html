@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Error: {{code}}</title>
+	<style>
+		div.wrapper {
+			width: 700px;
+			margin: 0 auto;
+		}
+
+		div.wrapper h1 {
+			text-align: center;
+		}
+
+		div.wrapper table {
+			width: 700px;
+			border: 1px solid #E82C15;
+			text-align: left;
+		}
+
+		div.wrapper table thead tr {
+			background: #E82C15;
+		}
+
+		div.wrapper table thead tr th {
+			width: 700px;
+		}
+
+		div.wrapper table thead tr th h2 {
+			color: #FFFFFF;
+			line-height: 50px;
+			margin: 0 0 0 5px;
+		}
+		div.wrapper table tbody tr.columns {
+			font-weight: bold;
+		}
+		div.wrapper table tbody tr td {
+			border: 1px solid #EEE;
+		}
+		div.wrapper table tbody tr.columns td.object {
+			width: 300px;
+		}
+		div.wrapper table tbody tr.columns td.file {
+			width: 200px;
+		}
+		div.wrapper table tbody tr.columns td.line {
+			width: 100px;
+		}
+		div.wrapper table tbody td h3 {
+			margin: 5px 0 0 0;
+		}
+		div.wrapper table tbody td:first-child {
+			padding-left: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="wrapper">
+		<h1>{{code}}</h1>
+		<table cellspacing="0">
+			<thead>
+				<tr>
+					<th colspan="3">
+						<h2>{{details}}</h2>
+						<ul>
+							<li><strong>File: </strong>{{file}}</li>
+							<li><strong>Line Number: </strong>{{lineNum}}</li>
+						</ul>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="3">
+						<h3>Call Stack</h3>
+					</td>
+				</tr>
+				<tr class="columns">
+					<td class="object">Object</td>
+					<td class="file">File</td>
+					<td class="line">Line Number</td>
+				</tr>
+				{{stackRows}}
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

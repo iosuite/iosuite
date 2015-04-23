@@ -1,0 +1,6 @@
+div.logo {
+	width: 200px;
+	height: 200px;
+	background: url('{{site_url}}assets/images/netsuite.png');
+	background-size: 200px 200px;
+}
