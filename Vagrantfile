@@ -9,10 +9,7 @@ apt-get upgrade -y
 apt-get install build-essential -y
 apt-get install curl libssl-dev unzip git-core npm -y
 
-cd ~/
-wget https://dl.ngrok.com/ngrok_2.0.17_linux_amd64.zip
-cd /usr/lib
-unzip ~/ngrok_2.0.17_linux_amd64.zip
+cp /var/www/iosuite/server/ngrok /usr/lib/ngrok
 alias ngrok=/usr/lib/ngrok
 
 npm install ny -g
