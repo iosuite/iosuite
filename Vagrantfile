@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	config.vm.provider "virtualbox" do |v|
 
-		v.name = "iosuite"
+		v.name = "swiosuite"
 
 		v.memory = 1024
 

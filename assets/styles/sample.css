@@ -1,6 +1,33 @@
+body {
+	background: #0069AA;
+}
+
 div.logo {
 	width: 200px;
 	height: 200px;
 	background: url('{{site_url}}assets/images/netsuite.png');
 	background-size: 200px 200px;
+	margin: 0 auto;
+}
+
+section.wrapper {
+	width: 270px;
+	margin: 10px auto;
+	padding: 10px;
+	background: #FFFFFF;
+}
+
+#update_title {
+	display: block;
+	height: 25px;
+	width: 90%;
+	margin: 0 auto;
+	border: 0;
+	outline-color: #22336D;
+	outline-offset: 0px;
+	outline-width: 2px;
+	outline-style: groove;
+	background: #0069AA;
+	color: #FFFFFF;
+	font-size: 13px;
 }
