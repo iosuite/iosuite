@@ -42,8 +42,14 @@ var core = (function() {
 				asset = public.module.fs.readFileSync( private._requestFile + private._requestFileExt );
 			}
 
-			var contentType = public.module.mime.lookup( private._requestFile + private._requestFileExt );
-			private._response.writeHead( 200, { 'Content-Type': contentType } );
+			var contentType = public.module.mime.lookup( private._requestFile + private._requestFileExt ),
+				headers = {};
+
+			headers['Content-Type'] = contentType;
+			headers["Access-Control-Allow-Headers"] = 'Origin, X-Requested-With, Content-Type, Accept';
+			headers["Access-Control-Allow-Origin"] = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
+
+			private._response.writeHead( 200, headers );
 			private._response.end( asset, 'binary' );
 
 		} catch(e) {
