@@ -7,13 +7,14 @@ var library = (function() {
 	public.module.fs = require('fs');
 
 	public.format = function( template, options ) {
-		var matches = template.match(/{{(.*)}}/g),
+		var matches = template.match(/({{)(.*)(}})/g),
 			tag, tagData, replaceAll;
 
 		if( matches ) {
 			for( var match in matches ) {
 
 				tag = matches[ match ].replace('{{','').replace('}}','');
+				console.log( 'Tag: ' + tag );
 				tagData = tag.split(':');
 				replaceAll = new RegExp( '{{' + tag + '}}', "g");
 
@@ -39,6 +40,19 @@ var library = (function() {
 							}
 							if( pieces && piecess[1] ) {
 								url += '&restlet=' + pieces[1];
+							}
+							template = template.replace( replaceAll, url );
+							break;
+						case 'suitelet':
+							var environment = ( options.environment != 'production' ) ? 'sandbox.' : '',
+								pieces = ( tagData[1] ) ? tagData[1].split('/') : false,
+								url = '/app/site/hosting/scriptlet.nl?script=customscript_master_restlet&deploy=1';
+
+							if( pieces && pieces[1] ) {
+								url += '&module=' + pieces[0];
+								url += '&suitelet=' + pieces[1];
+							} else if( pieces && pieces[0] ) {
+								url += '&suitelet=' + pieces[0];
 							}
 							template = template.replace( replaceAll, url );
 							break;

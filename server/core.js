@@ -220,10 +220,23 @@ var core = (function() {
 	private._setupLibrary = function( data, match, file ) {
 
 		var scriptUrl = './' + public.setting('application','directory') + '/libraries/' + file + '.js',
-			library = public.module.fs.readFileSync(scriptUrl);
+			library = private._stripBackreference( public.module.fs.readFileSync(scriptUrl, 'utf8') ),
+			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), environment: public.setting('application','environment')} ) : library;
 
-		return data.replace( match, library );
-	}
+		return private._replaceBackreference( data.replace( match, library ) );
+	};
+
+	private._stripBackreference = function( text ) {
+		var pattern = new RegExp(/(\$)((?! )(.))/g);
+
+		return text.replace( pattern, '|{$1+$2}|' );
+	};
+
+	private._replaceBackreference = function( text ) {
+		var pattern = new RegExp(/(\|{)(\$)(\+)(.)(}\|)/g);
+
+		return text.replace( pattern, '$2$4' );
+	};
 
 	return public;
 })();
