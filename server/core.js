@@ -121,20 +121,19 @@ var core = (function() {
 		if( err == null ) {
 
 			var lines, count,
-				matches = data.match(/{{(.*)}}/g),
-				tag = '',
+				regex = new RegExp( '({{)((?:[a-zA-Z0-9_:])*?)(}})', 'ig' ),
 				md5sum, newFile;
 
-			for( var match in matches ) {
-
-				var tag = matches[ match ].replace('{{','').replace('}}','').split(':'),
+			data = data.replace( regex, function(match, open, tag){
+				var tag = tag.split(':'),
 					call = '_setup' + tag[0].charAt(0).toUpperCase() + tag[0].slice(1);
-
+				
 				if( typeof private[ call ] == 'function' ) {
-					data = private[ call ]( data, matches[ match ], tag[1] );
+					return private[ call ]( tag[1] );
+				} else {
+					return match;
 				}
-
-			}
+			});
 
 			data = data.replace(/[^'":]\/\/.*/g, function(match){
 				return '/*' + match.replace('//','') + '*/';
@@ -160,6 +159,12 @@ var core = (function() {
 					}
 
 				});
+			} else {
+
+				/*
+				 *  For non-development environments, display the cache file
+				 */
+				public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 			}
 
 		} else {
@@ -190,40 +195,40 @@ var core = (function() {
 	/*
 	 * Convert template call to NetSuite getBody
 	 */
-	private._setupTemplate = function( data, match, file ) {
+	private._setupTemplate = function( file ) {
 
 		var templateUrl = public.setting('server','url') + public.setting('application','assets') + '/templates/' + file + '.html',
 			templateScript = 'nlapiRequestURL("' + templateUrl + '").getBody()';
 
-		return data.replace( match, templateScript );
+		return templateScript;
 
 	};
 
-	private._setupStyle = function( data, match, file ) {
+	private._setupStyle = function( file ) {
 
 		var styleUrl = public.setting('server','url') + public.setting('application','assets') + '/styles/' + file + '.css',
 			styleHref = 'nlapiRequestURL("' + styleUrl + '").getBody()';
 
-		return data.replace( match, styleHref );
+		return styleHref;
 
 	};
 
-	private._setupClient = function( data, match, file ) {
+	private._setupClient = function( file ) {
 
 		var scriptUrl = public.setting('server','url') + '/scripts/' + file + '.js',
 			scriptSrc = 'nlapiRequestURL("' + scriptUrl + '").getBody()';
 
-		return data.replace( match, scriptSrc );
+		return scriptSrc;
 
 	};
 
-	private._setupLibrary = function( data, match, file ) {
+	private._setupLibrary = function( file ) {
 
 		var scriptUrl = './' + public.setting('application','directory') + '/libraries/' + file + '.js',
 			library = private._stripBackreference( public.module.fs.readFileSync(scriptUrl, 'utf8') ),
 			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), environment: public.setting('application','environment')} ) : library;
 
-		return private._replaceBackreference( data.replace( match, library ) );
+		return private._replaceBackreference( library );
 	};
 
 	private._stripBackreference = function( text ) {
