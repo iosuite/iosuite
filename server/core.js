@@ -121,15 +121,14 @@ var core = (function() {
 		if( err == null ) {
 
 			var lines, count,
-				regex = new RegExp( '({{)((?:[a-zA-Z0-9_:])*?)(}})', 'ig' ),
+				regex = new RegExp( '{{([a-zA-Z0-9_]*):?([a-zA-Z0-9_]*)?}}', 'ig'),
 				md5sum, newFile;
 
-			data = data.replace( regex, function(match, open, tag){
-				var tag = tag.split(':'),
-					call = '_setup' + tag[0].charAt(0).toUpperCase() + tag[0].slice(1);
+			data = data.replace( regex, function(match, tag, options){
+				var call = '_setup' + tag.charAt(0).toUpperCase() + tag.slice(1);
 				
-				if( typeof private[ call ] == 'function' ) {
-					return private[ call ]( tag[1] );
+				if( typeof private[ call ] == 'function' && options != '}}' ) {
+					return private[ call ]( options );
 				} else {
 					return match;
 				}

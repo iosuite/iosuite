@@ -46,7 +46,7 @@ var library = (function() {
 						case 'suitelet':
 							var environment = ( options.environment != 'production' ) ? 'sandbox.' : '',
 								pieces = ( tagData[1] ) ? tagData[1].split('/') : false,
-								url = '/app/site/hosting/scriptlet.nl?script=customscript_master_restlet&deploy=1';
+								url = '/app/site/hosting/scriptlet.nl?script=customscript_master_suitelet&deploy=1';
 
 							if( pieces && pieces[1] ) {
 								url += '&module=' + pieces[0];
