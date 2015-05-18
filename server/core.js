@@ -11,12 +11,19 @@ var core = (function() {
 	private._cacheFile = '';
 	private._cacheFileFull = '';
 	private._library = require('./library');
+	private._migrate = require('./migrate');
 
 	public.init = function( file, parameters, response ) {
 
 		private._response = response;
 
-		if( file.indexOf('assets/') >= 0 ) {
+		if( file == 'migrate' ) {
+
+			/*
+			 *  Launch the Pseudo SQL Migrator
+			 */
+			private._migrate.init( private._response );
+		} else if( file.indexOf('assets/') >= 0 ) {
 			/*
 			 * Request is for an image / script / style
 			 */
@@ -121,7 +128,7 @@ var core = (function() {
 		if( err == null ) {
 
 			var lines, count,
-				regex = new RegExp( '{{([a-zA-Z0-9_]*):?([a-zA-Z0-9_]*)?}}', 'ig'),
+				regex = new RegExp( '{{([a-zA-Z0-9_]*):?([a-zA-Z0-9_\/]*)?}}', 'ig'),
 				md5sum, newFile;
 
 			data = data.replace( regex, function(match, tag, options){

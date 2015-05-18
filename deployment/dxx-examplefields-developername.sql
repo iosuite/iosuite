@@ -1,11 +1,32 @@
-This is an example file for deploying field/record changes from environment to environment
+-- This is an example file for deploying field/record changes from environment to environment
 
-File naming:
-The file name structure is as follows
+-- File naming:
+-- The file name structure is as follows
 
-1st character is "d", this is for files that demonstrate [d]evelopment only
-2nd character is either "s" or "x". "s" lists the changes as moved to [s]taging, "x" means they have not been moved
-3rd characters is either "p" or "x". "p" lists the changes as moved to [p]roduction, "x" means they have not been moved
+-- 1st character is either "d" or "x". "d" lists the changes as moved to [d]evelopment only, "x" means they have not been moved
+-- 2nd character is either "s" or "x". "s" lists the changes as moved to [s]taging, "x" means they have not been moved
+-- 3rd characters is either "p" or "x". "p" lists the changes as moved to [p]roduction, "x" means they have not been moved
+
+CREATE RECORD '_test_record';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Example:
 
