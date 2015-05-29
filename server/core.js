@@ -44,7 +44,7 @@ var core = (function() {
 		try {
 			var textExtensions = '|.html|.htm|.css|.js|.txt|';
 			if( textExtensions.indexOf( '|' + private._requestFileExt + '|' ) >= 0 ) {
-				asset = private._library.format( public.module.fs.readFileSync( private._requestFile + private._requestFileExt, 'utf-8' ), {site_url: public.setting('server','url'), environment: public.setting('application','environment')} );
+				asset = private._library.format( public.module.fs.readFileSync( private._requestFile + private._requestFileExt, 'utf-8' ), {site_url: public.setting('server','url'), asset_dir: public.setting('application','assets'), environment: public.setting('application','environment')} );
 			} else {
 				asset = public.module.fs.readFileSync( private._requestFile + private._requestFileExt );
 			}
@@ -174,7 +174,7 @@ var core = (function() {
 			}
 
 		} else {
-			var fourohfour = './server/404.js';
+			var fourohfour = './server/assets/404.js';
 			public.module.fs.readFile( fourohfour, 'utf8', function( error, data ){
 				if( error === null ) {
 					private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
@@ -232,7 +232,7 @@ var core = (function() {
 
 		var scriptUrl = './' + public.setting('application','directory') + '/libraries/' + file + '.js',
 			library = private._stripBackreference( public.module.fs.readFileSync(scriptUrl, 'utf8') ),
-			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), environment: public.setting('application','environment')} ) : library;
+			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), asset_dir: public.setting('application','assets'), environment: public.setting('application','environment')} ) : library;
 
 		return private._replaceBackreference( library );
 	};

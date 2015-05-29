@@ -7,73 +7,33 @@
 -- 2nd character is either "s" or "x". "s" lists the changes as moved to [s]taging, "x" means they have not been moved
 -- 3rd characters is either "p" or "x". "p" lists the changes as moved to [p]roduction, "x" means they have not been moved
 
-CREATE RECORD '_test_record';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Example:
-
-
-----------------------------------------------------------------------
-    {Record Type} | {New|Update|Delete} | {Other Options}
-    eg. Script Deployment | Update | Suitelet
-----------------------------------------------------------------------
-ID: customdeploy_example_deployment
-
-{Settings Tier, if applicable} -> {Setting} -> {New Value}
-Status -> Released
-Log Level -> Debug
-Audience -> Roles -> Administrator
-----------------------------------------------------------------------
-
-----------------------------------------------------------------------
-    Script Record | New | Restlet
-----------------------------------------------------------------------
-Name -> Script Record Name
-ID -> _script_record_id
-Description -> Script Record Description
-Owner -> Script Owner
-Scripts -> Script File -> Script Fileaname.js
-Scripts -> Post Function -> ScriptPostFunction
-----------------------------------------------------------------------
-    Deployment
-----------------------------------------------------------------------
-Title -> Script Record Name Deploy
-ID -> _script_record_deploy_id
-Deployed -> Checked
-Status -> Released
-Log Level -> Debug
-Audience -> Roles -> Select All -> Checked
-----------------------------------------------------------------------
-
-----------------------------------------------------------------------
-    Record Name | New | Custom Record Field
-----------------------------------------------------------------------
-Label -> Record Field Label
-ID -> _record_field_id
-Owner -> Record Field Owner
-Description -> Record Field Description
-Type -> Checkbox
-Store Value -> Checked
-Display -> Insert Before -> Outside columns at bottom
-Display Type -> Normal
-----------------------------------------------------------------------
-
-
+CREATE RECORD `_test_record` (
+	recordname `recordname`,
+	owner `123`,
+	description `This is a description`,
+	includename true,
+	showid false,
+	showcreationdate false,
+	showcreationdateonlist false,
+	showowner false,
+	showowneronlist false,
+	showownerallowchange false, -- requires showowner to be set to true
+	accesstype 'CUSTRECORDENTRYPERM', -- USEPERMISSIONLIST, NONENEEDED
+	allowuiaccess true,
+	allowmobileaccess false,
+	allowattachments true,
+	shownotes true,
+	enablemailmerge false,
+	isordered false,
+	allowinlinedetaching true,
+	allowinlineediting false, -- Requires allowinlinedetaching to be set to true
+	allowinlinedeleting false, -- Requires allowinlineediting to be set to true
+	allowquicksearch false,
+	allowquickadd true,
+	enablesystemnotes true,
+	enablekeywords true,
+	includeinsearchmenu true,
+	enableoptimisticlocking true,
+	enabledle true,
+	isinactive false
+);

@@ -28,7 +28,11 @@ var iosuite = (function(){
 			public.module[ private._modules[ i ] ] = require( private._modules[ i ] );
 		}
 
-		private._settings = public.module.ini.parse( public.module.fs.readFileSync( private._settingsPath, 'utf-8' ) );
+		try {
+			private._settings = public.module.ini.parse( public.module.fs.readFileSync( private._settingsPath, 'utf-8' ) );
+		} catch(e) {
+			console.log('settings.ini file does not exist');
+		}
 		
 		/*
 		 *  When restarting the server, clear the cache

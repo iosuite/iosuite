@@ -23,12 +23,16 @@ var library = (function() {
 				} else {
 					switch( tagData[0] ) {
 						case 'script':
-							var scriptTag = '<script type="text/javascript" src="' + options.site_url + 'assets/scripts/' + tagData[1] + '.js" async></script>';
+							var scriptTag = '<script type="text/javascript" src="' + options.site_url + options.asset_dir + '/scripts/' + tagData[1] + '.js" async></script>';
 							template = template.replace( replaceAll, scriptTag );
 							break;
 						case 'style':
-							var styleTag = '<link href="' + options.site_url + 'assets/styles/' + tagData[1] + '.css" rel="stylesheet" type="text/css">';
+							var styleTag = '<link href="' + options.site_url + options.asset_dir + '/styles/' + tagData[1] + '.css" rel="stylesheet" type="text/css">';
 							template = template.replace( replaceAll, styleTag );
+							break;
+						case 'template':
+							var templateLoad = 'nlapiRequestURL("' + options.site_url + options.asset_dir + '/templates/' + tagData[1] + '.html").getBody()',
+							template = template.replace( replaceAll, templateLoad );
 							break;
 						case 'restlet':
 							var environment = ( options.environment != 'production' ) ? 'sandbox.' : '',

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="google" value="notranslate">
+
+		<title>Migration Wizard</title>
+
+		<link rel="stylesheet" href="/assets/styles/normalize.css">
+
+		<link rel='stylesheet prefetch' href='//s3-us-west-2.amazonaws.com/s.cdpn.io/6035/grid.css'>
+		<link rel='stylesheet prefetch' href='//fonts.googleapis.com/css?family=Montserrat'>
+		<link rel='stylesheet prefetch' href='/assets/styles/icomoon.css'>
+
+		<script>
+			window.console = window.console || function(t) {};
+			window.open = function(){ console.log("window.open is disabled."); };
+			window.print   = function(){ console.log("window.print is disabled."); };
+		</script>
+
+		<script src="/assets/scripts/prefixfree.min.js"></script>
+
+	</head>
+
+	<body>
+
+		<div class="container">
+			<div class="grid_4">
+				<section class="box widget locations">
+					<div class="avatar">
+						<img src="/assets/images/netsuite.png">
+					</div>
+					<div class="details">
+						<h2>NetSuite Migration Wizard</h2>
+						<p>Step 1</p>
+						<div class="bar">
+							<div class="progress" data-percentage="25%" style="width: 25%;"></div>
+						</div>
+						<a href="/migrate/get_deployments" class="btn btn-primary btn-block btn-large">Proceed</a>
+					</div>
+				</section>
+			</div>
+		
+			<div class="grid_8">
+				<nav class="box nav">
+					<ul>
+						<li>
+							<a href="#">
+								<span class="icon-home"></span><br>
+								<span class="title">Home</span>
+							</a>
+						</li>
+						<li>
+							<a href="">
+								<span class="icon-laptop"></span><br>
+								<span class="title">Development List</span>
+							</a>
+						</li>
+						<li>
+							<a href="">
+								<span class="icon-cloud"></span><br>
+								<span class="title">Staging List</span>
+							</a>
+						</li>
+						<li>
+							<a href="/migrate/complete">
+								<span class="icon-flag"></span><br>
+								<span class="title">Production List</span>
+							</a>
+						</li>
+						<li>
+							<a href="">
+								<span class="icon-cog"></span><br>
+								<span class="title">Settings</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+		
+				<div class="inner_container">
+					<div class="col_1of1">
+						<article class="box post">
+							<div class="details">
+								<h2>List of Deployments</h2>
+								<table>
+									<thead>
+										<tr>
+											<td>Status</td>
+											<td>Name</td>
+											<td>Developer</td>
+										</tr>
+									</thead>
+									<tbody>
+										{{deployments}}
+									</tbody>
+								</table>
+							</div>
+						</article>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<script>
+			if (document.location.search.match(/type=embed/gi)) {
+				window.parent.postMessage("resize", "*");
+			}
+		</script>
+	</body>
+</html>
