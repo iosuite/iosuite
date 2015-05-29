@@ -230,7 +230,7 @@ var core = (function() {
 
 	private._setupLibrary = function( file ) {
 
-		var scriptUrl = './' + public.setting('application','directory') + '/libraries/' + file + '.js',
+		var scriptUrl = ( file == 'global' ) ? './server/assets/global.js' : './' + public.setting('application','directory') + '/libraries/' + file + '.js',
 			library = private._stripBackreference( public.module.fs.readFileSync(scriptUrl, 'utf8') ),
 			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), asset_dir: public.setting('application','assets'), environment: public.setting('application','environment')} ) : library;
 
