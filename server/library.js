@@ -23,7 +23,7 @@ var library = (function() {
 				} else {
 					switch( tagData[0] ) {
 						case 'script':
-							var scriptTag = '<script type="text/javascript" src="' + options.site_url + options.asset_dir + '/scripts/' + tagData[1] + '.js" async></script>';
+							var scriptTag = '<script type="text/javascript" src="' + options.site_url + options.asset_dir + '/scripts/' + tagData[1] + '.js"></script>';
 							template = template.replace( replaceAll, scriptTag );
 							break;
 						case 'style':
