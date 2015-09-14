@@ -17,7 +17,7 @@ var templates = (function() {
 		var parts = m.url.parse(request.url);
 
 		// find all html assets
-		var match = parts.pathname.match(/^\/assets\/(templates|styles|scripts)([a-zA-Z0-9_\/]*)([a-zA-Z0-9_]*).(html|htm|css|js|txt)/);
+		var match = parts.pathname.match(/^\/assets\/(templates|styles|scripts)([a-zA-Z0-9_\/]*)([a-zA-Z0-9._]*).(html|htm|css|js|txt)/);
 		if( match ) {
 			m.fs.exists( './' + parts.pathname, function (exists) {
 

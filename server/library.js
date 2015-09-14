@@ -7,7 +7,7 @@ var library = (function() {
 	public.module.fs = require('fs');
 
 	public.format = function( template, options ) {
-		var matches = template.match(/({{)([a-zA-Z0-9_]*)(}})/g),
+		var matches = template.match(/({{)([a-zA-Z0-9_\:\/\-\.]*)(}})/g),
 			tag, tagData, replaceAll;
 
 		if( matches ) {
