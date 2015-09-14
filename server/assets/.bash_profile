@@ -81,7 +81,7 @@ function setup() {
 	export SUBDOMAIN=$subdomain
 	mkdir ~/.ngrok2
 	echo "auth_token: $authToken" >> ~/.ngrok
-	echo "authtoken: $authToken" >> ~/.ngrok2/ngrok.yml
+	printf "authtoken: $authToken\ntunnels:\n  iosuite:\n    proto: http\n    addr: 8080\n    subdomain: $subdomain" >> ~/.ngrok2/ngrok.yml
 	pkill ngrok
 
 }
@@ -89,11 +89,11 @@ function setup() {
 
 function start() {
 
-	[ -z "$SUBDOMAIN" ] && { echo "First time? Don't forget to run 'setup [authtoken] [subdomain].'"; return; }
+	[ -f ~/.ngrok2/ngrok.yml ] || { echo "First time? Don't forget to run 'setup [authtoken] [subdomain].'"; return; }
 	currentPath=$(pwd)
 	cd /var/www/iosuite
 	pm2 start iosuite.js > /dev/null
-	eval "ngrok http -subdomain=$SUBDOMAIN 8080 > /var/www/iosuite/ngrok.log &"
+	eval "ngrok start iosuite > /var/www/iosuite/ngrok.log &"
 	cd "$currentPath"
 
 	echo "*************************************************"
@@ -105,6 +105,7 @@ function start() {
 	echo "*****     | | (_) \__ \ |_| | | ||  __/     *****"
 	echo "*****     |_|\___/|___/\__,_|_|\__\___|     *****"
 	echo "*****                         framework     *****"
+	echo "*****                                       *****"
 	echo "*************************************************"
 	echo "*************************************************"
 	echo ""
