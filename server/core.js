@@ -4,6 +4,13 @@ var core = (function() {
 		private = {},
 		m = {};
 
+	private._response;
+
+	private._requestFile = '';
+	private._cacheFile = '';
+	private._cacheFileFull = '';
+	private._library = require('./library');
+
 	public.init = function( app, modules ) {
 
 		m = modules;
