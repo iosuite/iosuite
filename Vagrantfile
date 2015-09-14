@@ -17,6 +17,9 @@ cp /var/www/iosuite/server/assets/ngrok /usr/lib/ngrok
 npm install n pm2 nodemon jshint -g
 n stable
 
+cd /var/www/iosuite
+npm install
+
 SCRIPT
 
 
