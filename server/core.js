@@ -22,7 +22,7 @@ var core = (function() {
 
 	private._setupRoutes = function() {
 
-		app.all('/', function(req, res, next) {
+		public.app.all('/', function(req, res, next) {
 			var origin = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
 			res.header("Access-Control-Allow-Origin", origin);
 			res.header("Access-Control-Allow-Headers", "X-Requested-With");
