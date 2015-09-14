@@ -9,6 +9,7 @@ var iosuite = (function(){
 
 	private._modules = ['express', 'path', 'fs', 'url', 'child_process', 'crypto', 'ini', 'mime', 'util', 'node-uuid'];
 
+	private._templates = require('./server/templates');
 	public.app = {};
 
 	private._construct = function() {
@@ -48,7 +49,9 @@ var iosuite = (function(){
 		/*
 		 *  Start the server
 		 */
+		private._templates.init( public, m );
 		public.app.listen( public.setting('server','port') );//, private._run );
+		public.app.use( private._templates.check );
 		public.app.use( '/assets', m.express.static('assets') );
 		private._core = require('./server/core');
 		private._core.init( public, m );
