@@ -111,7 +111,7 @@ function start() {
 	echo ""
 	echo "Starting server, please wait"
 	spinner 15
-	echo "Server available at https://$SUBDOMAIN.ngrok.io"
+	echo "Server available"
 }
 
 function stop() {
