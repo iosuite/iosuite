@@ -51,6 +51,14 @@ var iosuite = (function(){
 		 */
 		private._templates.init( public, m );
 		public.app.listen( public.setting('server','port') );//, private._run );
+
+		public.app.all('/assets', function(request, response, next) {
+			var origin = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
+			response.header("Access-Control-Allow-Origin", origin);
+			response.header("Access-Control-Allow-Headers", "X-Requested-With");
+			next();
+		});
+
 		public.app.use( private._templates.check );
 		public.app.use( '/assets', m.express.static('assets') );
 		private._core = require('./server/core');

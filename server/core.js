@@ -22,13 +22,6 @@ var core = (function() {
 
 	private._setupRoutes = function() {
 
-		public.app.all('/', function(req, res, next) {
-			var origin = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
-			res.header("Access-Control-Allow-Origin", origin);
-			res.header("Access-Control-Allow-Headers", "X-Requested-With");
-			next();
-		});
-
 		public.app.get('/restlet/*', private._scriptServe);
 		public.app.get('/suitelet/*', private._scriptServe);
 		public.app.get('/client/*', private._scriptServe);
