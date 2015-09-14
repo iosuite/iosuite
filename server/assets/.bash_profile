@@ -75,12 +75,13 @@ function setup() {
 
 	echo "Setting up the server."
 	echo "once complete you can run these commands:"
-	echo "'start': Start the server using pm2 and ngrok, accessable via https://$subdomain.ngrok.com"
+	echo "'start': Start the server using pm2 and ngrok, accessable via https://$subdomain.ngrok.io"
 	echo "'stop': Stop the server, breaks the tunnel and stops the pm2 server"
 	
 	export SUBDOMAIN=$subdomain
+	mkdir ~/.ngrok2
 	echo "auth_token: $authToken" >> ~/.ngrok
-	echo "auth_token: $authToken" >> ~/.ngrok2/ngrok.yml
+	echo "authtoken: $authToken" >> ~/.ngrok2/ngrok.yml
 	pkill ngrok
 
 }
@@ -92,7 +93,7 @@ function start() {
 	currentPath=$(pwd)
 	cd /var/www/iosuite
 	pm2 start iosuite.js > /dev/null
-	eval "ngrok -log=stdout -subdomain=$SUBDOMAIN 8080 > /var/www/iosuite/ngrok.log &"
+	eval "ngrok http -subdomain=$SUBDOMAIN 8080 > /var/www/iosuite/ngrok.log &"
 	cd "$currentPath"
 
 	echo "*************************************************"
@@ -109,7 +110,7 @@ function start() {
 	echo ""
 	echo "Starting server, please wait"
 	spinner 15
-	echo "Server available at https://$SUBDOMAIN.ngrok.com"
+	echo "Server available at https://$SUBDOMAIN.ngrok.io"
 }
 
 function stop() {
