@@ -1,80 +1,57 @@
 var iosuite = (function(){
 
 	var public = {},
-		private = {};
+		private = {},
+		m = {};
 
 	private._settingsPath = './settings.ini';
 	private._settings = {};
 
-	public.module = {};
-	private._modules = ['path', 'fs', 'url', 'child_process', 'crypto', 'ini', 'mime'];
+	private._modules = ['express', 'path', 'fs', 'url', 'child_process', 'crypto', 'ini', 'mime', 'util', 'node-uuid'];
 
-	public.libraries
-
-	private._server = {};
-	private._core = {};
-	private._urlObject = {};
-	private._route = '';
-	private._parameters = '';
+	public.app = {};
 
 	private._construct = function() {
 
 		/*
-		 * Make the modules inherit from public
+		 * Expose public to the submodules
 		 */
-		module.iosuite = Object.create( public );
+		m.iosuite = Object.create( public );
 
 		for( var i = 0; i < private._modules.length; i++ ) {
-			public.module[ private._modules[ i ] ] = require( private._modules[ i ] );
+			m[ private._modules[ i ].replace('-', '_') ] = require( private._modules[ i ] );
 		}
 
 		try {
-			private._settings = public.module.ini.parse( public.module.fs.readFileSync( private._settingsPath, 'utf-8' ) );
+			private._settings = m.ini.parse( m.fs.readFileSync( private._settingsPath, 'utf-8' ) );
 		} catch(e) {
 			console.log('settings.ini file does not exist');
 		}
-		
+
+		/*
+		 *  Setup Express
+		 */
+		public.app = m.express();
+
 		/*
 		 *  When restarting the server, clear the cache
 		 */
 		var cacheDirectory = public.setting('application','root') + public.setting('application','directory') + '/cache/',
-			cacheFiles = public.module.fs.readdirSync( cacheDirectory );
+			cacheFiles = m.fs.readdirSync( cacheDirectory );
 
 		for( var i = 0; i < cacheFiles.length; i++ ) {
 			if( cacheFiles[i] != 'index.html' ) {
-				public.module.fs.unlink( cacheDirectory + cacheFiles[i] );
+				m.fs.unlink( cacheDirectory + cacheFiles[i] );
 			}
 		}
 
 		/*
 		 *  Start the server
 		 */
-		private._server = require('./server/launch');
+		public.app.listen( public.setting('server','port') );//, private._run );
+		public.app.use( '/assets', m.express.static('assets') );
 		private._core = require('./server/core');
-
-		private._server.start( public.setting('server','port'), private._run );
-
-	};
-
-	private._run = function( request, response ) {
-
-		if( public.setting('application', 'environment') != 'production' ) {
-			console.log( 'request received' );
-			console.log( '-----------REQUEST START-----------' );
-			console.log( request.headers['user-agent'] );
-			console.log( request.connection.remoteAddress );
-			console.log( request.url );
-			console.log( '-----------REQUEST END-----------' );
-		}
-		var routeArray = [];
-
-		private._urlObject = public.module.url.parse( request.url, true );
-
-		private._route = private._urlObject.pathname.substring(1);
-
-		private._parameters = private._urlObject.query;
-
-		private._core.init( private._route, private._parameters, response );
+		private._core.init( public, m );
 
 	};
 

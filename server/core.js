@@ -1,90 +1,99 @@
 var core = (function() {
 
-	var public = module.parent.iosuite,
-		private = {};
+	var public = {},
+		private = {},
+		m = {};
 
-	private._return = 'success';
+	public.init = function( app, modules ) {
 
-	private._response;
+		m = modules;
+		public = app;
 
-	private._requestFile = '';
-	private._cacheFile = '';
-	private._cacheFileFull = '';
-	private._library = require('./library');
-	private._migrate = require('./migrate');
+		private._setupRoutes();
 
-	public.init = function( file, parameters, response ) {
+	};
 
+	private._setupRoutes = function() {
+
+		public.app.get('/restlet/*', private._scriptServe);
+		public.app.get('/suitelet/*', private._scriptServe);
+		public.app.get('/client/*', private._scriptServe);
+
+		public.app.route('/api/*')
+			.get( private._api )
+			.post( private._api )
+			.put( private._api )
+			.delete( private._api );
+
+	};
+
+	private._scriptServe = function( request, response ) {
+
+		var file = '';
+		private._parseRequest( request );
 		private._response = response;
 
-		if( file == 'migrate' ) {
-
-			/*
-			 *  Launch the Pseudo SQL Migrator
-			 */
-			private._migrate.init( private._response );
-		} else if( file.indexOf('assets/') >= 0 ) {
-			/*
-			 * Request is for an image / script / style
-			 */
-			private._return = private._readAsset( file );
-		} else {
-			private._return = private._readFile( file );
-		}
-
-		return private._return;
+		file = private._readFile();
 
 	};
 
-	private._readAsset = function( file ) {
-		private._requestFile = './' + file.substr(0, file.lastIndexOf('.'));
-		private._requestFileExt = '.' + file.split('.').pop();
+	/*
+	 *  API Calls
+	 */
+	private._api = function( request, response ) {
+		
+		var method = request.method,
+			api = {},
+			returnObject = {};
 
-		var asset;
+		private._parseRequest( request );
+		private._response = response;
+
 		try {
-			var textExtensions = '|.html|.htm|.css|.js|.txt|';
-			if( textExtensions.indexOf( '|' + private._requestFileExt + '|' ) >= 0 ) {
-				asset = private._library.format( public.module.fs.readFileSync( private._requestFile + private._requestFileExt, 'utf-8' ), {site_url: public.setting('server','url'), asset_dir: public.setting('application','assets'), environment: public.setting('application','environment')} );
-			} else {
-				asset = public.module.fs.readFileSync( private._requestFile + private._requestFileExt );
-			}
-
-			var contentType = public.module.mime.lookup( private._requestFile + private._requestFileExt ),
-				headers = {};
-
-			headers['Content-Type'] = contentType;
-			headers["Access-Control-Allow-Headers"] = 'Origin, X-Requested-With, Content-Type, Accept';
-			headers["Access-Control-Allow-Origin"] = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
-
-			private._response.writeHead( 200, headers );
-			private._response.end( asset, 'binary' );
-
+			api = require( './' + private._file );
+			api.init( public, m );
+			returnObject = api[ method.toLowerCase() ]();
 		} catch(e) {
-			if( e.code !== 'ENOENT' ) {
-				private._response.writeHead( 404, { 'Content-Type': 'text/html', 'charset': 'utf-8' } );
-				private._response.end( private._library.handleError( e, private._response ) );
-			} else {
-				private._writeResponse( 404, 'File does not exist', { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
-			}
+			returnObject = false;
 		}
 
+		if( returnObject ) {
+			private._writeResponse( returnObject.code || 404, returnObject.data || '', returnObject.headers || null );
+		} else {
+			private._writeResponse( 404, 'API Call does not exist');
+		}
+		
 	};
 
-	private._readFile = function( file ) {
 
-		var cacheHash = public.module.crypto.createHash('md5'),
-			filePieces = file.split('/'),
+	/*
+	 *   Parse request
+	 */
+	private._parseRequest = function( request ) {
+		private._urlObject = m.url.parse( request.url, true );
+
+		private._file = private._urlObject.pathname.substring(1);
+
+		private._parameters = private._urlObject.query;
+	};
+
+
+	/*
+	 *   File handling
+	 */
+	private._readFile = function() {
+
+		var cacheHash = m.crypto.createHash('md5'),
+			filePieces = private._file.split('/'),
 			requestFolder = './';
 
-		if( file.indexOf('.') >= 0 ) {
-			private._requestFile = requestFolder + file.substr(0, file.lastIndexOf('.'));
-			private._requestFileExt = '.' + file.split('.').pop();
+		if( private._file.indexOf('.') >= 0 ) {
+			private._requestFile = requestFolder + private._file.substr(0, private._file.lastIndexOf('.'));
+			private._requestFileExt = '.' + private._file.split('.').pop();
 		} else {
-			private._requestFile = requestFolder + public.setting('application','directory') + '/' + file;
+			private._requestFile = requestFolder + public.setting('application','directory') + '/' + private._file;
 			private._requestFileExt = '.js';
 		}
-
-		console.log( private._requestFile );
 
 		/*
 		 * Generate MD5 hash cache name
@@ -98,8 +107,7 @@ var core = (function() {
 				/*
 				 * If the app is in development, create a cache file and send
 				 */
-				console.log( private._requestFile + private._requestFileExt );
-				public.module.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
+				m.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
 				break;
 			case 'production':
 			case 'staging':
@@ -107,7 +115,7 @@ var core = (function() {
 				 * If the app is in any other environment, read the cache if it exists otherwise create the file
 				 * Note: The cache files shouldn't be saved to the repo, they will be created at first use
 				 */
-				public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
+				m.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 				break;
 		}
 
@@ -118,7 +126,7 @@ var core = (function() {
 		if( error === null ) {
 			private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
 		} else {
-			public.module.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
+			m.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
 		}
 
 	}
@@ -147,7 +155,7 @@ var core = (function() {
 
 			newFile = public.setting('application','root') + public.setting('application','directory') + '/cache/' + private._cacheFile + private._requestFileExt;
 
-			public.module.fs.writeFileSync( newFile, data );
+			m.fs.writeFileSync( newFile, data );
 			
 
 			/*
@@ -155,11 +163,11 @@ var core = (function() {
 			 */
 			if( public.setting('application','environment') == 'development' ) {
 				//console.log( 'jshint --show-non-errors --reporter=' + public.setting('general','server_directory') + 'server/jshint_reporter.js ' + newFile );
-				public.module.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('application','root') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
+				m.child_process.exec( 'jshint --show-non-errors --reporter=' + public.setting('application','root') + '/server/jshint_reporter.js' + newFile, function(error, stdout, stderr) {
 					if( stdout.toString() == '' ) {
 						console.log( error );
 						//private._writeResponse( 200, stderr.toString(), { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
-						public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
+						m.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 					} else {
 						private._writeResponse( 200, stdout, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
 					}
@@ -170,12 +178,12 @@ var core = (function() {
 				/*
 				 *  For non-development environments, display the cache file
 				 */
-				public.module.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
+				m.fs.readFile( private._cacheFileFull, 'utf8', private._outputCacheFile );
 			}
 
 		} else {
 			var fourohfour = './server/assets/404.js';
-			public.module.fs.readFile( fourohfour, 'utf8', function( error, data ){
+			m.fs.readFile( fourohfour, 'utf8', function( error, data ){
 				if( error === null ) {
 					private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
 				} else {
@@ -186,17 +194,6 @@ var core = (function() {
 		}
 
 	};
-
-	private._writeResponse = function( code, output, headers ) {
-
-		if( headers == null ) {
-			private._response.writeHead( code );
-		} else {
-			private._response.writeHead( code, headers );
-		}
-		private._response.write( output );
-		private._response.end();
-	}
 
 	/*
 	 * Convert template call to NetSuite getBody
@@ -231,7 +228,7 @@ var core = (function() {
 	private._setupLibrary = function( file ) {
 
 		var scriptUrl = ( file == 'global' ) ? './server/assets/global.js' : './' + public.setting('application','directory') + '/libraries/' + file + '.js',
-			library = private._stripBackreference( public.module.fs.readFileSync(scriptUrl, 'utf8') ),
+			library = private._stripBackreference( m.fs.readFileSync(scriptUrl, 'utf8') ),
 			library = ( file != 'global' ) ? private._library.format( library, {site_url: public.setting('server','url'), asset_dir: public.setting('application','assets'), environment: public.setting('application','environment')} ) : library;
 
 		return private._replaceBackreference( library );
@@ -247,6 +244,17 @@ var core = (function() {
 		var pattern = new RegExp(/(\|{)(\$)(\+)(.)(}\|)/g);
 
 		return text.replace( pattern, '$2$4' );
+	};
+
+	private._writeResponse = function( code, output, headers ) {
+
+		private._response.status( code );
+		if( headers != null ) {
+			private._response.set( headers );
+		}
+		private._response.send( output );
+		private._response.end();
+
 	};
 
 	return public;
