@@ -130,7 +130,7 @@ var core = (function() {
 
 	private._outputCacheFile = function( error, data ) {
 
-		if( error === null ) {
+		if( error == null ) {
 			private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });
 		} else {
 			m.fs.readFile( private._requestFile + private._requestFileExt, 'utf8', private._createCacheFile );
@@ -189,7 +189,7 @@ var core = (function() {
 			}
 
 		} else {
-			var fourohfour = './server/assets/404.js';
+			var fourohfour = './server/views/404.js';
 			m.fs.readFile( fourohfour, 'utf8', function( error, data ){
 				if( error === null ) {
 					private._writeResponse( 200, data, { 'Content-Type': 'text/plain', 'charset': 'utf-8' });

@@ -52,6 +52,7 @@ var iosuite = (function(){
 		private._templates.init( public, m );
 		public.app.listen( public.setting('server','port') );//, private._run );
 
+		public.app.set('views', __dirname + '/server/views');
 		public.app.use('/', function(request, response, next) {
 			var origin = ( public.setting('application','environment') == 'production' ) ? 'https://system.netsuite.com' : 'https://system.sandbox.netsuite.com';
 			response.header("Access-Control-Allow-Origin", origin);
@@ -61,8 +62,18 @@ var iosuite = (function(){
 
 		public.app.use( private._templates.check );
 		public.app.use( '/assets', m.express.static('assets') );
+
 		private._core = require('./server/core');
 		private._core.init( public, m );
+
+		public.app.use(function(request, response){
+			var fourohfour = './server/views/404.html';
+			m.fs.readFile( fourohfour, 'utf8', function( error, data ){
+				response.send( data );
+				response.end();
+			} );
+
+		});
 
 	};
 
