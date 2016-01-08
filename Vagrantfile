@@ -42,11 +42,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "shell", inline: $script
 
 	config.vm.hostname = "NSIO"
-	config.vm.network "forwarded_port", guest: 8080, host: 8080
-
-#	config.vm.boot_timeout = 60
-#	config.vm.provider "virtualbox" do |vb, override|
-#		vb.gui = true
-#	end
 
 end
